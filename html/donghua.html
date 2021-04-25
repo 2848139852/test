@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        div {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            width: 100px;
+            height: 100px;
+            background-color: pink;
+        }
+        
+        span {
+            /*定位必须加 */
+            position: absolute;
+            left: 0;
+            top: 200px;
+            display: block;
+            width: 150px;
+            height: 150px;
+            background-color: purple;
+        }
+    </style>
+</head>
+
+<body>
+    <div>1</div>
+    <span>2</span>
+    <button class="jin">进</button>
+    <button class="tui">退</button>
+    <script>
+        //函数封装
+        function animate(obj, target, callback) {
+            //obj.timer给对象添加属性避免使用var timer 需要不断开辟内存空间
+            //不同的实参有不同的定时器
+
+            // 当我们不断的点击按钮，这个元素的速度会越来越快，因为开启了太多的定时器
+            // 解决方案就是 让我们元素只有一个定时器执行
+            // 先清除以前的定时器，只保留当前的一个定时器执行
+            clearInterval(obj.timer);
+            obj.timer = setInterval(function() {
+                //缓动动画
+                var step = (target - obj.offsetLeft) / 10;
+                //小数点的问题以及正负问题
+                step = step > 0 ? Math.ceil(step) : Math.floor(step);
+                if (obj.offsetLeft == target) {
+                    //停止动画
+                    clearInterval(obj.timer);
+                    if (callback) {
+                        //回调函数,当动画执行完后执行
+                        callback();
+                    }
+                }
+                obj.style.left = obj.offsetLeft + step + 'px';
+            }, 30);
+        }
+        var div = document.querySelector('div');
+        var span = document.querySelector('span');
+        var button1 = document.querySelector('.jin');
+        var button2 = document.querySelector('.tui');
+        //调用函数
+        animate(div, 300);
+        // animate(span, 200);
+        button1.addEventListener('click', function() {
+            animate(span, 500);
+        });
+        button2.addEventListener('click', function() {
+            animate(span, 300, function() {
+                // alert('nihao');
+                span.style.backgroundColor = 'red';
+            });
+        })
+    </script>
+</body>
+
+</html>
